@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
         const fileExt = imageUrl.split('.').pop()?.split('?')[0] || 'jpg';
         const fileName = `${user.id}/${uuidv4()}.${fileExt}`;
 
-        const { data, error } = await adminSupabase.storage
+        const { error } = await adminSupabase.storage
           .from('property-images')
           .upload(fileName, buffer, {
             contentType: `image/${fileExt}`,
@@ -94,8 +94,9 @@ export async function POST(req: NextRequest) {
     }
     
     return NextResponse.json(property);
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Internal Server Error';
     console.error('Scrape error:', error);
-    return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

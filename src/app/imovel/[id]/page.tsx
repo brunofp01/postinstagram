@@ -6,7 +6,7 @@ import { InstagramCaption } from "@/components/InstagramCaption"
 import { ActionButtons } from "@/components/ActionButtons"
 import { Badge } from "@/components/ui/badge"
 import { Bed, Car, Bath, Maximize, MapPin, Calendar, ExternalLink } from "lucide-react"
-import { formatCurrency, formatArea } from "@/lib/utils"
+import { formatCurrency } from "@/lib/utils"
 
 export default async function PropertyPage({ params }: { params: { id: string } }) {
   const supabase = createClient()

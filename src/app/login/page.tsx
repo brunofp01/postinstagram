@@ -33,8 +33,9 @@ export default function LoginPage() {
 
       router.push("/dashboard")
       router.refresh()
-    } catch (err: any) {
-      setError(err.message || "Erro ao fazer login")
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Erro ao fazer login"
+      setError(message)
     } finally {
       setLoading(false)
     }
@@ -53,8 +54,9 @@ export default function LoginPage() {
       if (error) throw error
       
       setError("Cadastro realizado! Verifique seu e-mail para confirmar (se necessário) ou tente logar.")
-    } catch (err: any) {
-      setError(err.message || "Erro ao cadastrar")
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Erro ao cadastrar"
+      setError(message)
     } finally {
       setLoading(false)
     }
