@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
-import { LogOut, Home, Grid } from "lucide-react"
+import { LogOut, Grid } from "lucide-react"
 
 export function Navbar() {
   const router = useRouter()

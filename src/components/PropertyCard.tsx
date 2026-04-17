@@ -1,7 +1,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { Property } from "@/types/property"
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Bed, Car, Bath, Maximize, MapPin } from "lucide-react"
 import { formatCurrency, formatArea } from "@/lib/utils"

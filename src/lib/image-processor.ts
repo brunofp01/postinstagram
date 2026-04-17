@@ -27,7 +27,6 @@ export async function processScrollStopper(options: ProcessOptions) {
   const { width, height } = metadata;
 
   // Instagram Safe Zone (10% margins)
-  const safeXStart = width * 0.1;
   const safeXEnd = width * 0.9;
   const safeYStart = height * 0.1;
   const safeYEnd = height * 0.9;
