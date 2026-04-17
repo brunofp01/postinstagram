@@ -1,5 +1,4 @@
 import sharp from 'sharp';
-import { v4 as uuidv4 } from 'uuid';
 import { createAdminClient } from './supabase/server';
 
 interface ProcessOptions {
@@ -32,8 +31,6 @@ export async function processScrollStopper(options: ProcessOptions) {
   const safeXEnd = width * 0.9;
   const safeYStart = height * 0.1;
   const safeYEnd = height * 0.9;
-  const safeWidth = safeXEnd - safeXStart;
-  const safeHeight = safeYEnd - safeYStart;
 
   // Proportional font sizes based on image width
   const titleFontSize = Math.round(width * 0.05); // ~72px for 1440px wide
@@ -138,7 +135,7 @@ export async function processScrollStopper(options: ProcessOptions) {
   const fileExt = imageUrl.split('.').pop()?.split('?')[0] || 'jpg';
   const fileName = `${userId}/${propertyId}_cover.${fileExt}`;
 
-  const { data: uploadData, error: uploadError } = await adminSupabase.storage
+  const { error: uploadError } = await adminSupabase.storage
     .from('property-images')
     .upload(fileName, processedBuffer, {
       contentType: `image/${fileExt}`,

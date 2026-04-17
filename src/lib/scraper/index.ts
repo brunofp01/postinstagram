@@ -16,15 +16,15 @@ export async function scrapeProperty(url: string): Promise<ScrapedProperty> {
   const $ = cheerio.load(html);
 
   if (url.includes('zapimoveis.com.br') || url.includes('vivareal.com.br')) {
-    return parseZapVivaReal($, html);
+    return parseZapVivaReal($);
   } else if (url.includes('olx.com.br')) {
-    return parseOlx($, html);
+    return parseOlx($);
   } else {
     throw new Error('Website not supported yet.');
   }
 }
 
-function parseZapVivaReal($: cheerio.CheerioAPI, html: string): ScrapedProperty {
+function parseZapVivaReal($: cheerio.CheerioAPI): ScrapedProperty {
   const nextData = $('#__NEXT_DATA__').html();
   if (!nextData) throw new Error('Could not find __NEXT_DATA__ in ZAP/VivaReal');
 
@@ -43,11 +43,11 @@ function parseZapVivaReal($: cheerio.CheerioAPI, html: string): ScrapedProperty 
     parking_spots: listing.parkingSpaces?.[0] || 0,
     area_m2: listing.usableAreas?.[0] || 0,
     description: listing.description || '',
-    imageUrls: listing.images?.map((img: any) => img.url) || [],
+    imageUrls: listing.images?.map((img: { url: string }) => img.url) || [],
   };
 }
 
-function parseOlx($: cheerio.CheerioAPI, html: string): ScrapedProperty {
+function parseOlx($: cheerio.CheerioAPI): ScrapedProperty {
   // OLX often embeds data in a script tag as well
   const adDataScript = $('script[id="initial-data"]').attr('data-json');
   if (adDataScript) {
@@ -56,15 +56,15 @@ function parseOlx($: cheerio.CheerioAPI, html: string): ScrapedProperty {
     
     return {
       title: ad.subject || '',
-      neighborhood: ad.properties?.find((p: any) => p.name === 'neighborhood')?.value || '',
+      neighborhood: ad.properties?.find((p: { name: string, value: string }) => p.name === 'neighborhood')?.value || '',
       city: ad.location?.municipality || '',
       price: parseFloat(ad.priceValue?.replace(/[^\d]/g, '') || '0'),
-      bedrooms: parseInt(ad.properties?.find((p: any) => p.name === 'rooms')?.value || '0'),
-      bathrooms: parseInt(ad.properties?.find((p: any) => p.name === 'bathrooms')?.value || '0'),
-      parking_spots: parseInt(ad.properties?.find((p: any) => p.name === 'garage_spaces')?.value || '0'),
-      area_m2: parseInt(ad.properties?.find((p: any) => p.name === 'size')?.value || '0'),
+      bedrooms: parseInt(ad.properties?.find((p: { name: string, value: string }) => p.name === 'rooms')?.value || '0'),
+      bathrooms: parseInt(ad.properties?.find((p: { name: string, value: string }) => p.name === 'bathrooms')?.value || '0'),
+      parking_spots: parseInt(ad.properties?.find((p: { name: string, value: string }) => p.name === 'garage_spaces')?.value || '0'),
+      area_m2: parseInt(ad.properties?.find((p: { name: string, value: string }) => p.name === 'size')?.value || '0'),
       description: ad.body || '',
-      imageUrls: ad.images?.map((img: any) => img.original) || [],
+      imageUrls: ad.images?.map((img: { original: string }) => img.original) || [],
     };
   }
 
