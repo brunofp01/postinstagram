@@ -53,7 +53,7 @@ export function ImportDialog() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
+      <DialogTrigger>
         <Button className="gap-2 bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all duration-300 transform hover:scale-105">
           <Plus className="w-4 h-4" />
           Importar Imóvel
