@@ -2,8 +2,8 @@
 
 import { useState } from "react"
 import Image from "next/image"
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
-import { ChevronLeft, ChevronRight, Maximize2 } from "lucide-react"
+import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { Maximize2 } from "lucide-react"
 
 interface ImageGalleryProps {
   images: string[]

@@ -4,7 +4,8 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { MessageCircle, Download, Image as ImageIcon, Loader2 } from "lucide-react"
 import JSZip from "jszip"
-import { saveAs } from "file-saver" // I need to install file-saver or use a native alternative
+ 
+
 
 interface ActionButtonsProps {
   propertyUrl: string

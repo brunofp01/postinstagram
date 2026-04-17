@@ -43,8 +43,9 @@ export function ImportDialog() {
       setUrl("")
       router.refresh()
       router.push(`/imovel/${property.id}`)
-    } catch (error: any) {
-      alert(error.message)
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Erro desconhecido"
+      alert(message)
     } finally {
       setLoading(false)
     }
@@ -85,7 +86,7 @@ export function ImportDialog() {
           </div>
           <div className="bg-primary/5 rounded-xl p-4 border border-primary/10">
             <p className="text-sm text-primary/80 leading-relaxed italic">
-              "Nosso sistema fará o scraping dos dados, aplicará o design scroll stopper na capa e gerará a legenda persuasiva com IA."
+              &quot;Nosso sistema fará o scraping dos dados, aplicará o design scroll stopper na capa e gerará a legenda persuasiva com IA.&quot;
             </p>
           </div>
         </div>
