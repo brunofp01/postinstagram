@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
-import { LogOut, Grid } from "lucide-react"
+import { LogOut, Grid, Sparkles } from "lucide-react"
 
 export function Navbar() {
   const router = useRouter()
@@ -31,6 +31,13 @@ export function Navbar() {
             <Button variant="ghost" size="sm" className="gap-2">
               <Grid className="w-4 h-4" />
               Dashboard
+            </Button>
+          </Link>
+
+          <Link href="/importar">
+            <Button size="sm" className="gap-2 bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary transition-all">
+              <Sparkles className="w-4 h-4" />
+              Criar Post
             </Button>
           </Link>
           
