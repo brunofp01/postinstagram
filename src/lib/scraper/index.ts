@@ -31,35 +31,41 @@ function parseQuintoAndarVitrine($: cheerio.CheerioAPI, url: string): ScrapedPro
   if (!nextData) throw new Error('Could not find __NEXT_DATA__ in QuintoAndar');
 
   const data = JSON.parse(nextData);
-  
-  // QuintoAndar Vitrine structure is deeply nested in pageProps
   const pageProps = data.props.pageProps;
   
   // Try to find the house ID from URL
   const houseIdMatch = url.match(/\/v2\/(\d+)\//);
   const houseId = houseIdMatch ? houseIdMatch[1] : null;
+
+  // New discovery: QuintoAndar Vitrine often puts the main data in initialState.listing
+  // or inside houses[id] if it's a normalized store.
+  const listing = pageProps.initialState?.listing || pageProps.listing || pageProps.listingData;
+  const houseFromStore = houseId && pageProps.initialState?.houses ? pageProps.initialState.houses[houseId] : null;
   
-  // QuintoAndar stores houses in a normalized object in initialState or directly in listing
-  const house = houseId && pageProps.initialState?.houses ? pageProps.initialState.houses[houseId] : 
-                pageProps.listingData || pageProps.house || pageProps.listing;
+  const house = houseFromStore || listing || pageProps.house;
 
   if (!house) throw new Error('Could not find house data in QuintoAndar JSON');
 
+  // QuintoAndar Vitrine specific mappings
+  const address = house.address || {};
+  
   return {
-    title: house.title || house.subject || '',
-    neighborhood: house.address?.neighborhood || house.neighborhood || '',
-    city: house.address?.city || house.city || '',
+    title: house.title || house.subject || house.summary || '',
+    neighborhood: address.neighborhood || house.neighborhood || '',
+    city: address.city || house.city || '',
     price: house.salePrice || house.price || house.totalCost || 0,
     bedrooms: house.bedrooms || 0,
     bathrooms: house.bathrooms || 0,
-    parking_spots: house.parkingSpaces || 0,
+    parking_spots: house.parkingSpaces || house.parking_spots || 0,
     area_m2: house.usableArea || house.area || 0,
     description: house.description || '',
-    imageUrls: house.images?.map((img: any) => {
-      // QuintoAndar images often need a base URL or are full URLs already
-      // Usually they are full URLs in the JSON
-      return typeof img === 'string' ? img : img.url || img.original || img.src;
-    }) || [],
+    imageUrls: (house.photos || house.images || [])
+      .map((img: any) => {
+        // High res QuintoAndar photos usually have a specific URL pattern or are full URLs
+        if (typeof img === 'string') return img;
+        return img.url || img.original || img.src || img.placeholder;
+      })
+      .filter(Boolean),
   };
 }
 
