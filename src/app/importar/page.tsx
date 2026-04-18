@@ -195,10 +195,11 @@ export default function ImportPage() {
 
         <div className="mt-16 text-center">
           <p className="text-muted-foreground font-medium mb-8 uppercase tracking-widest text-xs">Portais Suportados Atualmente</p>
-          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-40 grayscale hover:grayscale-0 transition-all duration-700">
-            <span className="text-2xl font-black italic">ZAP</span>
-            <span className="text-2xl font-black">VivaReal</span>
-            <span className="text-2xl font-black">OLX</span>
+          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-40 grayscale hover:grayscale-0 transition-all duration-700 font-black italic">
+            <span className="text-2xl italic">ZAP</span>
+            <span className="text-2xl">VivaReal</span>
+            <span className="text-2xl">OLX</span>
+            <span className="text-2xl">QuintoAndar Vitrine</span>
           </div>
         </div>
       </main>

@@ -19,9 +19,48 @@ export async function scrapeProperty(url: string): Promise<ScrapedProperty> {
     return parseZapVivaReal($);
   } else if (url.includes('olx.com.br')) {
     return parseOlx($);
+  } else if (url.includes('vitrine.quintoandar.com.br')) {
+    return parseQuintoAndarVitrine($, url);
   } else {
     throw new Error('Website not supported yet.');
   }
+}
+
+function parseQuintoAndarVitrine($: cheerio.CheerioAPI, url: string): ScrapedProperty {
+  const nextData = $('#__NEXT_DATA__').html();
+  if (!nextData) throw new Error('Could not find __NEXT_DATA__ in QuintoAndar');
+
+  const data = JSON.parse(nextData);
+  
+  // QuintoAndar Vitrine structure is deeply nested in pageProps
+  const pageProps = data.props.pageProps;
+  
+  // Try to find the house ID from URL
+  const houseIdMatch = url.match(/\/v2\/(\d+)\//);
+  const houseId = houseIdMatch ? houseIdMatch[1] : null;
+  
+  // QuintoAndar stores houses in a normalized object in initialState or directly in listing
+  const house = houseId && pageProps.initialState?.houses ? pageProps.initialState.houses[houseId] : 
+                pageProps.listingData || pageProps.house || pageProps.listing;
+
+  if (!house) throw new Error('Could not find house data in QuintoAndar JSON');
+
+  return {
+    title: house.title || house.subject || '',
+    neighborhood: house.address?.neighborhood || house.neighborhood || '',
+    city: house.address?.city || house.city || '',
+    price: house.salePrice || house.price || house.totalCost || 0,
+    bedrooms: house.bedrooms || 0,
+    bathrooms: house.bathrooms || 0,
+    parking_spots: house.parkingSpaces || 0,
+    area_m2: house.usableArea || house.area || 0,
+    description: house.description || '',
+    imageUrls: house.images?.map((img: any) => {
+      // QuintoAndar images often need a base URL or are full URLs already
+      // Usually they are full URLs in the JSON
+      return typeof img === 'string' ? img : img.url || img.original || img.src;
+    }) || [],
+  };
 }
 
 function parseZapVivaReal($: cheerio.CheerioAPI): ScrapedProperty {
